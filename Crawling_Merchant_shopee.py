@@ -7,6 +7,12 @@ import traceback
 import time
 import os
 import datetime
+from pymongo import MongoClient
+client = MongoClient('localhost', 27017)
+db = client.Shopee
+
+
+
 class Run:
     Product_name = ""
     Product_price = 0
@@ -23,6 +29,7 @@ class Run:
     Search = "beauty"
 
     def Crawling(self):
+
         self.Selenium.link = "https://shopee.co.id/Kecantikan-cat.14840"+Concatenate().InfuseSeparator(main=self.Search, separator=self.word_separator)+"?page="+str(self.product_page)
         #"https://shopee.co.id/search?keyword="+Concatenate().InfuseSeparator(main=self.Search, separator=self.word_separator)+"&page="+str(self.product_page)
         self.Selenium.Load(self.Selenium.link)
@@ -46,9 +53,15 @@ class Run:
                 index = self.Product_name.split('i.')
                 print(index[0])
                 item_count +=1
+                detail = {
+                    'name' : self.Product_name,
+                    'location' : self.Product_location,
+                }
 
+                result=db.product.insert_one(detail)
             self.Selenium.link = "https://shopee.co.id/search?keyword="+Concatenate().InfuseSeparator(main=self.Search, separator=self.word_separator)+"&page="+str(self.product_page)
             self.Selenium.Load(self.Selenium.link)
             time.sleep(3)
+
 
 Run().Crawling()
