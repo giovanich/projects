@@ -26,7 +26,8 @@ class Selenium:
 
     def __init__(self, extension_directory_path=None):
 
-        chrome_driver_path = "/home/user/Desktop/file/Crawler-master/chromedriver"
+        chrome_driver_path = "/home/user/Desktop/crawl-master/chromedriver"
+
 
         if extension_directory_path is not None:
             chrome_options = Options()
@@ -36,16 +37,18 @@ class Selenium:
             chrome_options = Options()
             chrome_options.add_argument("--window-size=1920,1080");
             chrome_options.add_argument("--start-maximized");
-            chrome_options.add_argument("--headless");
+            #chrome_options.add_argument("--headless");
             self.Driver = webdriver.Chrome(executable_path=chrome_driver_path,chrome_options=chrome_options)
         #self.Driver.set_window_size(2500, 15000)
+
 
 
     def Close(self):
 
         self.Driver.close()
 
-
+    def Refresh(self):
+        self.Driver.refresh()
     def ResetParameter(self, parameter):
 
         if parameter == "sleep_time" or parameter is None:
@@ -80,18 +83,18 @@ class Selenium:
 
         if link is not None:
             self.link = link
-        print("Loading:", self.link)
+        #print("Loading:", self.link)
         self.Driver.get(self.link)
         self.ResetParameters("trigger_xpaths_list")
 
     def ErrorHandling(self, e, try_count):
 
         self.element = None
-        print(str(e))
+        #print(str(e))
         if self.max_try_count - try_count != 1:  # Prevents unneccesary refresh at last try count
             self.Load(self.link)
             time.sleep(self.sleep_time * try_count)
-            print("Re-clicks:", self.trigger_xpaths_list)
+            #print("Re-clicks:", self.trigger_xpaths_list)
             self.BackPage()
             for trigger_xpath in self.trigger_xpaths_list:
                 self.ClickIt(trigger_xpath, reserve_trigger=False)
@@ -105,7 +108,7 @@ class Selenium:
                 wait = WebDriverWait(self.Driver, 20)
                 self.element = wait.until(EC.visibility_of_element_located((By.XPATH, self.xpath)))
                 ActionChains(self.Driver).move_to_element(self.element).perform()
-                print("Extracted element:", self.xpath)
+                #print("Extracted element:", self.xpath)
                 break
             except Exception as e:
                 print(e)
@@ -124,17 +127,16 @@ class Selenium:
             self.xpath = xpath
             self.ExtractElementProcess()
         return self.element
-
     def ExtractElementsProcess(self):
 
         for try_count in range(0, self.max_try_count):
             self.elements = self.Driver.find_elements_by_xpath(self.xpath)
             self.elements_count = len(self.elements)
             if self.elements_count != 0:
-                print("Extracted", str(self.elements_count), "elements:", self.xpath)
+                #print("Extracted", str(self.elements_count), "elements:", self.xpath)
                 break
             elif self.elements_count == 0:
-                e = "Possible error: elements_count is 0"
+                print("none")
                 #self.ErrorHandling(e, try_count)
 
     def ExtractElements(self, xpath=None, return_type = None):
@@ -194,7 +196,7 @@ class Selenium:
             self.extract = self.element.text
             if self.extract is not None:
                 self.extract = Manipulate().RemoveLargeEmos(self.extract)
-        print("Extracted text:", self.extract)
+        #print("Extracted text:", self.extract)
         return self.extract
 
 
@@ -202,7 +204,7 @@ class Selenium:
         try:
             if self.element is not None:
                 self.extract = self.element.get_attribute(attribute)
-            print("Extracted attribute:", self.extract)
+            #print("Extracted attribute:", self.extract)
             return self.extract
         except Exception as e:
             print(e)
@@ -256,7 +258,32 @@ class Selenium:
         self.InsertClearedTextBox(element, text)
         element.send_keys(Keys.ENTER)
 
+    def scrollDown(self, numberOfScrollDowns):
+        #self.Driver.execute_script("window.scrollTo(0, 520);")
+        body = self.Driver.find_element_by_tag_name("body")
+        while numberOfScrollDowns>= 0:
+            body.send_keys(Keys.PAGE_DOWN)
+            time.sleep(0.5)
+            numberOfScrollDowns -= 1
+    def scrollUp(self, numberOfScrollUps):
+        #self.Driver.execute_script("window.scrollTo(0, 520);")
+        body = self.Driver.find_element_by_tag_name("body")
+        while numberOfScrollUps>= 0:
+            time.sleep(0.5)
+            body.send_keys(Keys.PAGE_UP)
+            numberOfScrollUps -= 1
+    def scrollDown1(self):
+        #self.Driver.execute_script("window.scrollTo(0, 520);")
+        self.Driver.execute_script("window.scrollTo(0, (document.body.scrollHeight)4);")
+    def scrollDown2(self):
+        #self.Driver.execute_script("window.scrollTo(0, 520);")
+        self.Driver.execute_script("window.scrollTo(0, (document.body.scrollHeight)/2);")
+    def scrollDown3(self):
+        #self.Driver.execute_script("window.scrollTo(0, 520);")
+        self.Driver.execute_script("window.scrollTo(0, (document.body.scrollHeight)*2/3);")
 
+    def clear_cache(self):
+        self.Driver.delete_all_cookies()
 
     def ForwardPage(self):
         self.Driver.forward()

@@ -28,6 +28,6 @@ class MongoDB:
             db = client.tokopedia
             db.Merchant.drop()
         elif collection_name is 'MerchantShopee':
-            db = client.shopee
+            db = client.shopeeh
             db.Merchant.drop()
 #db = client.shopee
