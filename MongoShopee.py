@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import pymongo
 from pymongo import MongoClient
 import datetime
@@ -93,6 +94,57 @@ class MongoDB:
             for i in searchPage:
                 b = str(i)
                 return int(b.replace('{\'Product_page\': ','').replace('}',''))
+
+
+    def updateMerchantPageLog(self,page_count):
+        #untuktrycatch error
+        db.Log.update({'_id': 'crawlmerchant' },{"$set": { 'page': page_count}})
+
+    def timeTrackError(self):
+        db.Log.update({'_id': 'crawlmerchant' },{'$addToSet': { 'timeError': datetime.datetime.now() }})
+
+    def updateMerchantTimeEnd(self):
+        db.Log.update({'_id': 'crawlmerchant' },{"$set": { 'timeEnd':  datetime.datetime.now()}})
+
+    def checkMerchantPage(self,yesno):
+        if yesno is True:
+            db.Log.update({'_id': 'crawlmerchant'},{'$set' :{'timeStart' : datetime.datetime.now()}})
+            check = db.Log.find({'_id' : 'crawlmerchant'},{'page' : 1,'_id' : 0})
+            for i in check:
+                a = str(i).replace("{ \"page\" : ",'').replace(" }",'')
+                return int(a)
+        else:
+            check = db.Log.find({'_id' : 'crawlmerchant'},{'page' : 1,'_id' : 0})
+            for i in check:
+                a = str(i).replace("{ \"page\" : ",'').replace(" }",'')
+                return int(a)
+
+    def getLinkToCrawling(self):
+        a = ''
+        check = db.Category.find({'status' : 2},{'_id' : 1}).limit(1).count()
+        if check == 1:
+            result = db.Category.find({'status' : 2},{'_id' : 1})
+            for i in result:
+                a = str(i).replace('{\'_id\': \'','').replace('\'}','')
+        else:
+            result = db.Merchant.find({'status':1},{'_id':1}).limit(1)
+            for i in result
+                a = str(i).replace('{\'_id\': \'','').replace('\'}','')
+        return str(a)
+    def updateRunning(self,x):
+        db.Category.update(
+              {"_id": x},
+              { "$set": {"status": 2} }
+            )
+    def updateDoneStatus(self,x):
+        db.Category.update(
+                  {"_id": x},
+                  { "$set": {"status": 0} }
+                )
+    def updateStatusSatu(self):
+        db.Category.update({},{ "$set": {"status": 1} })
+
+
     #def parseIntAtt(self):
     #    db.Merchant.find({Merchant_followers :{$exists: true}}).forEach(function(obj){obj.Merchant_followers = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
     #    db.Merchant.find({Merchant_product :{$exists: true}}).forEach(function(obj){obj.Merchant_product = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );

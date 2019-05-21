@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from MongoShopee import MongoDB
 from OmniCrawler import Selenium
 from datetime import datetime
@@ -24,7 +25,7 @@ class Run:
     db = MongoDB()
 
     max_merchant = db.countMerchant()
-    print(max_merchant)#;input()
+    #print(max_merchant)#;input()
     page_ordinal = 100
     def Crawling(self):
         while self.max_merchant != 0:
@@ -67,7 +68,7 @@ class Run:
                             k = self.idProduct.split("-i")
                             l = k[0].split('id/')
                             self.namaProduct= l[1].replace('-',' ')
-                            print(self.namaProduct)
+                            #print(self.namaProduct)
                             self.jumlahTerjual = self.Selenium.ExtractElementText(''.join(["//*[@id='main']/div/div[2]/div[2]/div[2]/div/div[3]/div[@class='shop-page__all-products-section']/div[2]/div/div[2]/div/div[",str(item_count),"]/div/a/div/div[2]/div[4]/div[3]"]))
                             check = self.Selenium.ExtractElements(''.join(["//*[@id='main']/div/div[2]/div[2]/div[2]/div/div[3]/div[@class='shop-page__all-products-section']/div[2]/div/div[2]/div/div[",str(item_count),"]/div/a/div/div[2]/div[2]/div"]))
                             if  len(check) == 2:
@@ -136,15 +137,15 @@ class Run:
                                 #self.hargaRangeBawah = None
                                 #self.hargaDisRangeAtas = None
                                 #self.hargaDisRangeBawah = None
-                            print(1)
+                            #print(1)
                             if item_count != 1:
-                                print(2)
+                                #print(2)
                                 if self.db.checkProduct(link, self.idProduct) is None:
-                                    print(3)
-                                    print(self.db.checkProduct(link, self.idProduct))
+                                    #print(3)
+                                    #print(self.db.checkProduct(link, self.idProduct))
                                     self.db.insertProduct(self.idProduct, link, self.namaProduct, self.jumlahTerjual, self.hargaAsli, self.hargaDiskon, self.hargaRangeAtas, self.hargaRangeBawah, self.hargaDisRangeAtas, self.hargaDisRangeBawah)
                             else:
-                                print(4)
+                                #print(4)
                                 self.db.insertProduct(self.idProduct, link, self.namaProduct, self.jumlahTerjual, self.hargaAsli, self.hargaDiskon, self.hargaRangeAtas, self.hargaRangeBawah, self.hargaDisRangeAtas, self.hargaDisRangeBawah)
                 self.db.updateStatusEnd(link)
                 self.max_merchant -=1

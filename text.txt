@@ -1,0 +1,9 @@
+https://shopee.co.id/Perawatan-Wajah-cat.14840.18309?locations=
+Kab.%2520Bandung%2520Barat%2C
+Kab.%2520Bandung%2C
+Kota%2520Bandung%2C
+Kota%2520Tangerang%2C
+Kab.%2520Tangerang%2C
+Kota%2520Tangerang%2520Selatan
+&page=0&sortBy=pop
+all (' ') space will be '%2520'

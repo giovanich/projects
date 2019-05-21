@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
@@ -37,7 +37,7 @@ class Selenium:
             chrome_options = Options()
             chrome_options.add_argument("--window-size=1920,1080");
             chrome_options.add_argument("--start-maximized");
-            #chrome_options.add_argument("--headless");
+            chrome_options.add_argument("--headless");
             self.Driver = webdriver.Chrome(executable_path=chrome_driver_path,chrome_options=chrome_options)
         #self.Driver.set_window_size(2500, 15000)
 
@@ -111,7 +111,8 @@ class Selenium:
                 #print("Extracted element:", self.xpath)
                 break
             except Exception as e:
-                print(e)
+                a = 10
+                #print(e)
                 #self.ErrorHandling(e, try_count)
 
     def ExtractElement(self, xpath=None):
@@ -136,7 +137,8 @@ class Selenium:
                 #print("Extracted", str(self.elements_count), "elements:", self.xpath)
                 break
             elif self.elements_count == 0:
-                print("none")
+                a = None
+                #print("none")
                 #self.ErrorHandling(e, try_count)
 
     def ExtractElements(self, xpath=None, return_type = None):
@@ -207,7 +209,7 @@ class Selenium:
             #print("Extracted attribute:", self.extract)
             return self.extract
         except Exception as e:
-            print(e)
+            #print(e)
             return None
 
 

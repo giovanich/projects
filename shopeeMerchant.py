@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from MongoShopee import MongoDB
 from OmniCrawler import Selenium
 from datetime import datetime
@@ -6,7 +7,7 @@ import traceback
 import time
 import os
 import datetime
-
+yesno = True
 
 class Run:
     Merchant_html_path = ''
@@ -27,11 +28,14 @@ class Run:
     page_ordinal = 100
     def Crawling(self):
         while self.product_page == 0 or (self.product_page < self.page_ordinal and self.product_page < self.max_product_page):
+            self.product_page = MongoDB().checkMerchantPage(yesno)
+            yesno = False
             self.Selenium.link = "https://shopee.co.id/Kecantikan-cat.14840?page="+str(self.product_page)
             #"https://shopee.co.id/search?keyword="+Concatenate().InfuseSeparator(main=self.Search, separator=self.word_separator)+"&page="+str(self.product_page)
             self.Selenium.Load(self.Selenium.link)
             time.sleep(4)
             self.page_ordinal = int(self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[1]/div[2]/div/span[2]"))
+            MongoDB().updateMerchantPageLog(self.product_page)
             self.product_page+=1
             item_count = 0
             print('item :'+str(item_count))
@@ -112,6 +116,13 @@ class Run:
                             print("skip")
                     #self.Selenium.clear_cache()
                     self.Selenium.BackPage();time.sleep(2)
+        MongoDB().updateMerchantTimeEnd()
+    def main(self):
+        try:
+            self.Crawling()
+        except Exception as e:
+            MongoDB().timeTrackError()
+            self.Crawling()
 
 try:
     Run().Crawling()
