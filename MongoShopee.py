@@ -128,7 +128,7 @@ class MongoDB:
                 a = str(i).replace('{\'_id\': \'','').replace('\'}','')
         else:
             result = db.Merchant.find({'status':1},{'_id':1}).limit(1)
-            for i in result
+            for i in result:
                 a = str(i).replace('{\'_id\': \'','').replace('\'}','')
         return str(a)
     def updateRunning(self,x):
@@ -144,7 +144,12 @@ class MongoDB:
     def updateStatusSatu(self):
         db.Category.update({},{ "$set": {"status": 1} })
 
-
+    def checkCityStatus(self,category):
+        result = db.Category.find({ "_id" : category ,'Region' : {'$elemMatch':{'status': 1}}},{'_id':0,'Region.$.City':1})
+        for i in result:
+            return str(i)
+    def updateStatusCity(self,category,city):
+        result = db.Category.update({ "_id" : category ,'Region' : {'$elemMatch':{'City': city}}},{"$set": {"Region.$.status": 1}})
     #def parseIntAtt(self):
     #    db.Merchant.find({Merchant_followers :{$exists: true}}).forEach(function(obj){obj.Merchant_followers = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
     #    db.Merchant.find({Merchant_product :{$exists: true}}).forEach(function(obj){obj.Merchant_product = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
