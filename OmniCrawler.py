@@ -83,18 +83,18 @@ class Selenium:
 
         if link is not None:
             self.link = link
-        #print("Loading:", self.link)
+        print("Loading:", self.link)
         self.Driver.get(self.link)
         self.ResetParameters("trigger_xpaths_list")
 
     def ErrorHandling(self, e, try_count):
 
         self.element = None
-        #print(str(e))
+        print(str(e))
         if self.max_try_count - try_count != 1:  # Prevents unneccesary refresh at last try count
             self.Load(self.link)
             time.sleep(self.sleep_time * try_count)
-            #print("Re-clicks:", self.trigger_xpaths_list)
+            print("Re-clicks:", self.trigger_xpaths_list)
             self.BackPage()
             for trigger_xpath in self.trigger_xpaths_list:
                 self.ClickIt(trigger_xpath, reserve_trigger=False)
@@ -108,11 +108,11 @@ class Selenium:
                 wait = WebDriverWait(self.Driver, 20)
                 self.element = wait.until(EC.visibility_of_element_located((By.XPATH, self.xpath)))
                 ActionChains(self.Driver).move_to_element(self.element).perform()
-                #print("Extracted element:", self.xpath)
+                print("Extracted element:", self.xpath)
                 break
             except Exception as e:
                 a = 10
-                #print(e)
+                print(e)
                 #self.ErrorHandling(e, try_count)
 
     def ExtractElement(self, xpath=None):
@@ -134,11 +134,11 @@ class Selenium:
             self.elements = self.Driver.find_elements_by_xpath(self.xpath)
             self.elements_count = len(self.elements)
             if self.elements_count != 0:
-                #print("Extracted", str(self.elements_count), "elements:", self.xpath)
+                print("Extracted", str(self.elements_count), "elements:", self.xpath)
                 break
             elif self.elements_count == 0:
                 a = None
-                #print("none")
+                print("none")
                 #self.ErrorHandling(e, try_count)
 
     def ExtractElements(self, xpath=None, return_type = None):
@@ -198,7 +198,7 @@ class Selenium:
             self.extract = self.element.text
             if self.extract is not None:
                 self.extract = Manipulate().RemoveLargeEmos(self.extract)
-        #print("Extracted text:", self.extract)
+        print("Extracted text:", self.extract)
         return self.extract
 
 
@@ -206,10 +206,10 @@ class Selenium:
         try:
             if self.element is not None:
                 self.extract = self.element.get_attribute(attribute)
-            #print("Extracted attribute:", self.extract)
+            print("Extracted attribute:", self.extract)
             return self.extract
         except Exception as e:
-            #print(e)
+            print(e)
             return None
 
 

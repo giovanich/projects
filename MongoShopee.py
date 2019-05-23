@@ -118,19 +118,6 @@ class MongoDB:
             for i in check:
                 a = str(i).replace("{ \"page\" : ",'').replace(" }",'')
                 return int(a)
-
-    def getLinkToCrawling(self):
-        a = ''
-        check = db.Category.find({'status' : 2},{'_id' : 1}).limit(1).count()
-        if check == 1:
-            result = db.Category.find({'status' : 2},{'_id' : 1})
-            for i in result:
-                a = str(i).replace('{\'_id\': \'','').replace('\'}','')
-        else:
-            result = db.Merchant.find({'status':1},{'_id':1}).limit(1)
-            for i in result:
-                a = str(i).replace('{\'_id\': \'','').replace('\'}','')
-        return str(a)
     def updateRunning(self,x):
         db.Category.update(
               {"_id": x},
@@ -141,15 +128,56 @@ class MongoDB:
                   {"_id": x},
                   { "$set": {"status": 0} }
                 )
-    def updateStatusSatu(self):
-        db.Category.update({},{ "$set": {"status": 1} })
+    def updateStatusCategoryAll(self,status = 1):
+        db.Category.update_many({},{ "$set": {"status": status} })
 
     def checkCityStatus(self,category):
-        result = db.Category.find({ "_id" : category ,'Region' : {'$elemMatch':{'status': 1}}},{'_id':0,'Region.$.City':1})
-        for i in result:
-            return str(i)
+        a = ''
+        result = db.Category.find({ "_id" : category ,'Region' : {'$elemMatch':{'status': 2}}},{'_id':0,'Region.$.City':1})
+        if result.count()==1:
+            for i in result:
+                a = str(i).replace("{'Region': [{'City': '","").replace("', 'status': 2}]}","")
+        else:
+            result = db.Category.find({ "_id" : category ,'Region' : {'$elemMatch':{'status': 1}}},{'_id':0,'Region.$.City':1})
+            for i in result:
+                a = str(i).replace("{'Region': [{'City': '","").replace("', 'status': 1}]}","")
+        return a
+
+    def updatedStatusCategory(self,category):
+        if self.checkCityStatus(category) == '':
+            self.updateDoneStatus(category)
+        else:
+            self.updateRunning(category)
+
+    def updateStatusCityRun(self,category,city):
+        result = db.Category.update({ "_id" : category ,'Region' : {'$elemMatch':{'City': city}}},{"$set": {"Region.$.status": 2}})
+
+    def updateStatusCityDone(self,category,city):
+        result = db.Category.update({ "_id" : category ,'Region' : {'$elemMatch':{'City': city}}},{"$set": {"Region.$.status": 0}})
+
     def updateStatusCity(self,category,city):
         result = db.Category.update({ "_id" : category ,'Region' : {'$elemMatch':{'City': city}}},{"$set": {"Region.$.status": 1}})
+
+    def getLinkToCrawling(self):
+        a = ''
+        b = []
+        check = db.Category.find({'status' : 2},{'_id' : 1}).limit(1).count()
+        if check == 1:
+            result = db.Category.find({'status' : 2},{'_id' : 1})
+            for i in result:
+                a = str(i).replace('{\'_id\': \'','').replace('\'}','')
+                b.append(a)
+                b.append(self.checkCityStatus(a))
+        else:
+            result = db.Category.find({'status':1},{'_id':1}).limit(1)
+            for i in result:
+                a = str(i).replace('{\'_id\': \'','').replace('\'}','')
+                b.append(a)
+                b.append(self.checkCityStatus(a))
+        return b
+    def updateStatusCityAll(self,status = 1):
+        db.Category.update_many({ "_id" : '$exists','Region' : '$exists'},{"$set": {"Region.$.status": status}})
+
     #def parseIntAtt(self):
     #    db.Merchant.find({Merchant_followers :{$exists: true}}).forEach(function(obj){obj.Merchant_followers = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
     #    db.Merchant.find({Merchant_product :{$exists: true}}).forEach(function(obj){obj.Merchant_product = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
