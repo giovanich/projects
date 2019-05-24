@@ -95,7 +95,6 @@ class MongoDB:
                 b = str(i)
                 return int(b.replace('{\'Product_page\': ','').replace('}',''))
 
-
     def updateMerchantPageLog(self,page_count):
         #untuktrycatch error
         db.Log.update({'_id': 'crawlmerchant' },{"$set": { 'page': page_count}})
@@ -111,13 +110,20 @@ class MongoDB:
             db.Log.update({'_id': 'crawlmerchant'},{'$set' :{'timeStart' : datetime.datetime.now()}})
             check = db.Log.find({'_id' : 'crawlmerchant'},{'page' : 1,'_id' : 0})
             for i in check:
-                a = str(i).replace("{ \"page\" : ",'').replace(" }",'')
+                a = str(i).replace("{\'page\': ",'').replace(" }",'')
                 return int(a)
         else:
             check = db.Log.find({'_id' : 'crawlmerchant'},{'page' : 1,'_id' : 0})
             for i in check:
-                a = str(i).replace("{ \"page\" : ",'').replace(" }",'')
+                a = str(i).replace("{\'page\': ",'').replace(" }",'')
                 return int(a)
+    def lastPage(self,Merchant):
+        result = db.Category.find({'_id':Merchant},{'last_page':1,'_id':0})
+        for i in result:
+            a = str(i).replace("{\'last_page\': ",'').replace("}",'')
+            return int(a)
+    def updatePages(self,Merchant,pages =0):
+        db.Category.update({'_id':Merchant},{'$set':{'last_page':pages}})
     def updateRunning(self,x):
         db.Category.update(
               {"_id": x},
@@ -177,7 +183,10 @@ class MongoDB:
         return b
     def updateStatusCityAll(self,status = 1):
         db.Category.update_many({ "_id" : '$exists','Region' : '$exists'},{"$set": {"Region.$.status": status}})
-
+    def countCategory(self):
+        a = db.Category.find({'status':1}).count()
+        b = db.Category.find({'status':2}).count()
+        return a+b
     #def parseIntAtt(self):
     #    db.Merchant.find({Merchant_followers :{$exists: true}}).forEach(function(obj){obj.Merchant_followers = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
     #    db.Merchant.find({Merchant_product :{$exists: true}}).forEach(function(obj){obj.Merchant_product = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
