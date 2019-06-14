@@ -19,34 +19,34 @@ class MongoDB:
                     'Merchant_crawlingTime' : datetime.datetime.now(),
                     'status' : 1
                 }
-        result=db.Merchant.insert_one(detail)
+        result=db.MerchantJuni.insert_one(detail)
     def checkMerchant(self, Merchant_html_path):
-        result= db.Merchant.find({'_id' : Merchant_html_path},{'_id':1})
+        result= db.MerchantJuni.find({'_id' : Merchant_html_path},{'_id':1})
         for i in result:
             return str(i)
 
     def updateStatus(self, x):
-            db.Merchant.update(
+            db.MerchantJuni.update(
                   {"_id": x},
                   { "$set": {"status": 2} }
                 )
     def updateStatusEnd(self, x):
-            db.Merchant.update(
+            db.MerchantJuni.update(
                   {"_id": x},
                   { "$set": {"status": 0} }
                 )
     def checkMerchantToCrawl(self):
         #print("start")
         a = ''
-        check = db.Merchant.find({'status':2},{'_id':1}).limit(1).collation({'locale': "en_US", 'numericOrdering': True}).sort('Merchant_followers', pymongo.DESCENDING)
-        count = db.Merchant.find({'status':2},{'_id':1}).limit(1).collation({'locale': "en_US", 'numericOrdering': True}).sort('Merchant_followers', pymongo.DESCENDING).count()
+        check = db.MerchantJuni.find({'status':2},{'_id':1}).limit(1).collation({'locale': "en_US", 'numericOrdering': True}).sort('Merchant_followers', pymongo.DESCENDING)
+        count = db.MerchantJuni.find({'status':2},{'_id':1}).limit(1).collation({'locale': "en_US", 'numericOrdering': True}).sort('Merchant_followers', pymongo.DESCENDING).count()
         #print(count);input()
         if count == 1:
             for k in check:
                 a = str(k).replace('{\'_id\': \'','').replace('\'}','')
                 #print("nilai "+a)
         else:
-            result = db.Merchant.find({'status':1},{'_id':1}).limit(1).collation({'locale': "en_US", 'numericOrdering': True}).sort('Merchant_followers', pymongo.DESCENDING)
+            result = db.MerchantJuni.find({'status':1},{'_id':1}).limit(1).collation({'locale': "en_US", 'numericOrdering': True}).sort('Merchant_followers', pymongo.DESCENDING)
             for j in result:
                 a = str(j).replace('{\'_id\': \'','').replace('\'}','')
 
@@ -62,18 +62,18 @@ class MongoDB:
             "hargaRangeBawah":hargaRangeBawah,
             "hargaDisRangeAtas":hargaDisRangeAtas,
             "hargaDisRangeBawah":hargaDisRangeBawah}
-        db.Merchant.update({'_id': merchant_link }, { "$addToSet": { "ProductInfo": product_info } })
+        db.MerchantJuni.update({'_id': merchant_link }, { "$addToSet": { "ProductInfo": product_info } })
 
     def setStatus(self,Merchant_link):
-        db.Merchant.update({'_id': Merchant_link},{'$set':{'status':2}})
+        db.MerchantJuni.update({'_id': Merchant_link},{'$set':{'status':2}})
 
     def checkProduct(self, merchant_link, idProduct):
 
-        result = db.Merchant.find({ "_id" : merchant_link ,'ProductInfo' : {'$elemMatch':{'idProduct':idProduct}}},{'_id':1})
+        result = db.MerchantJuni.find({ "_id" : merchant_link ,'ProductInfo' : {'$elemMatch':{'idProduct':idProduct}}},{'_id':1})
         for i in result:
             return str(i)
     def countMerchant(self):
-        return db.Merchant.find({'status':1}).count()
+        return db.MerchantJuni.find({'status':1}).count()
 
     def writeLog(self,Merchant_link, page_product):
         check = db.Log.find({'_id' : Merchant_link}).count()
@@ -124,6 +124,7 @@ class MongoDB:
             return int(a)
     def updatePages(self,Merchant,pages =0):
         db.Category.update({'_id':Merchant},{'$set':{'last_page':pages}})
+
     def updateRunning(self,x):
         db.Category.update(
               {"_id": x},
@@ -140,13 +141,14 @@ class MongoDB:
     def checkCityStatus(self,category):
         a = ''
         result = db.Category.find({ "_id" : category ,'Region' : {'$elemMatch':{'status': 2}}},{'_id':0,'Region.$.City':1})
+        print(result.count())
         if result.count()==1:
             for i in result:
-                a = str(i).replace("{'Region': [{'City': '","").replace("', 'status': 2}]}","")
+                a = str(i).replace("{'Region': [{'City': '","").replace("', 'status': 2.0}]}","").replace("', 'status': 2}]}","")
         else:
             result = db.Category.find({ "_id" : category ,'Region' : {'$elemMatch':{'status': 1}}},{'_id':0,'Region.$.City':1})
             for i in result:
-                a = str(i).replace("{'Region': [{'City': '","").replace("', 'status': 1}]}","")
+                a = str(i).replace("{'Region': [{'City': '","").replace("', 'status': 1.0}]}","").replace("', 'status': 1}]}","")
         return a
 
     def updatedStatusCategory(self,category):
@@ -188,5 +190,5 @@ class MongoDB:
         b = db.Category.find({'status':2}).count()
         return a+b
     #def parseIntAtt(self):
-    #    db.Merchant.find({Merchant_followers :{$exists: true}}).forEach(function(obj){obj.Merchant_followers = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
-    #    db.Merchant.find({Merchant_product :{$exists: true}}).forEach(function(obj){obj.Merchant_product = new NumberInt(obj.Merchant_followers); db.Merchant.save(obj); } );
+    #    db.MerchantJuni.find({Merchant_followers :{$exists: true}}).forEach(function(obj){obj.Merchant_followers = new NumberInt(obj.Merchant_followers); db.MerchantJuni.save(obj); } );
+    #    db.MerchantJuni.find({Merchant_product :{$exists: true}}).forEach(function(obj){obj.Merchant_product = new NumberInt(obj.Merchant_followers); db.MerchantJuni.save(obj); } );

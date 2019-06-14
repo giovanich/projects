@@ -7,7 +7,6 @@ import traceback
 import time
 import os
 import datetime
-yesno = True
 
 class Run:
     Merchant_html_path = ''
@@ -33,33 +32,34 @@ class Run:
             self.Selenium.link = Link_Merchant+"?locations="+Code_City.replace(" ",self.word_separator)+"&page="+str(self.product_page)+"&sortBy=sales"
             self.Selenium.Load(self.Selenium.link)
             time.sleep(4)
-            self.page_ordinal = int(self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[1]/div[2]/div/span[2]"))
+            self.page_ordinal = int(self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[1]/div[2]/div/span[2]"))-1
             self.product_page+=1
+            print("jumlah page ;" + str(self.page_ordinal))
             item_count = 0
             print('item :'+str(item_count))
-            item_ordinal = self.Selenium.ExtractElements("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div")
-            print(len(item_ordinal))
-            while item_count <= len(item_ordinal):
+            item_ordinal = self.Selenium.ExtractElements("//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div")
+            print("jumlah item : "+ str(len(item_ordinal)))
+            while item_count < len(item_ordinal):
                 item_count +=1
                 if item_count <11:
-                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
-                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
+                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
+                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
                 elif item_count<21:
                     self.Selenium.scrollDown(3)
-                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
-                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
+                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
+                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
                 elif item_count<31:
                     self.Selenium.scrollDown(4)
-                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
-                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
+                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
+                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
                 elif item_count<41:
                     self.Selenium.scrollDown(5)
-                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
-                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
+                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
+                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
                 elif item_count<51:
                     self.Selenium.scrollDown(6)
-                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
-                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[4]/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
+                    product_link = self.Selenium.ExtractElementAttribute('href',''.join(["//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a"]))
+                    self.Merchant_location = self.Selenium.ExtractElementText("//*[@id='main']/div/div[2]/div[2]/div/div/div[@class='container _1EofO_']/div[2]/div/div/div[2]/div["+str(item_count)+"]/div/a/div/div[2]/div[5]")
                 else:
                     self.Selenium.scrollUp(3)
                 print('item :'+str(item_count))
@@ -75,7 +75,6 @@ class Run:
                         self.Merchant_html_path = self.Selenium.ExtractElementAttribute('href',"//*[@id='main']/div/div[2]/div[2]/div[2]/div[3]/div[1]/div[1]/div/div[3]/a")
                     else :
                         print(product_link)
-
                     if MongoDB().checkMerchant(self.Merchant_html_path) is None :
                         self.Selenium.Load(self.Merchant_html_path)
                         time.sleep(3)
@@ -100,22 +99,35 @@ class Run:
                             print("skip")
                     self.Selenium.BackPage();time.sleep(2)
             MongoDB().updatePages(Link_Merchant,self.product_page)
+            self.product_page = 0
+            self.number_item = 0
+            self.Date_Crawling = 0
+            self.max_product_page = 100
+
         MongoDB().updateStatusCityDone(Link_Merchant,Code_City)
+        MongoDB().updatePages(Link_Merchant)
+        self.Selenium.clear_cache()
 
     def main(self):
         Link_Merchant_count = MongoDB().countCategory()
         while Link_Merchant_count != 0:
             try:
                 self.Crawling(MongoDB().getLinkToCrawling()[0],MongoDB().getLinkToCrawling()[1])
+                self.product_page = 0
+                self.number_item = 0
+                self.Date_Crawling = 0
+                self.max_product_page = 100
+                print(MongoDB().getLinkToCrawling()[1])
                 MongoDB().updateStatusCityDone(MongoDB().getLinkToCrawling()[0],MongoDB().getLinkToCrawling()[1])
                 MongoDB().updatedStatusCategory(MongoDB().getLinkToCrawling()[0])
             except Exception as e:
+                print(e)
                 MongoDB().timeTrackError()
-                self.Crawling()
+                self.Crawling(MongoDB().getLinkToCrawling()[0],MongoDB().getLinkToCrawling()[1])
             Link_Merchant_count = MongoDB().countCategory()
         MongoDB().updateMerchantTimeEnd()
 try:
-    Run().Crawling()
+    Run().main()
 except Exception as e:
     print(Run().product_page)
-    Run().Crawling()
+    Run().main()

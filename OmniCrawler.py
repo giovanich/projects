@@ -26,7 +26,7 @@ class Selenium:
 
     def __init__(self, extension_directory_path=None):
 
-        chrome_driver_path = "/home/user/Desktop/crawl-master/chromedriver"
+        chrome_driver_path = "/home/user/Desktop/prodPop/chromedriver"
 
 
         if extension_directory_path is not None:
@@ -37,7 +37,7 @@ class Selenium:
             chrome_options = Options()
             chrome_options.add_argument("--window-size=1920,1080");
             chrome_options.add_argument("--start-maximized");
-            chrome_options.add_argument("--headless");
+            #chrome_options.add_argument("--headless");
             self.Driver = webdriver.Chrome(executable_path=chrome_driver_path,chrome_options=chrome_options)
         #self.Driver.set_window_size(2500, 15000)
 
